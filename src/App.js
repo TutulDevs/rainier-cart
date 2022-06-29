@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useContext } from "react";
+import { Card } from "./components/Card";
+import { Header } from "./components/Header";
+import AppContext from "./store/AppContext";
+import { CartSidebar } from "./components/CartSidebar";
 
 function App() {
+  const { isLoading, productList } = useContext(AppContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+
+      <main className="min-h-main ">
+        {isLoading ? (
+          <h2 className=" p-4 animate-pulse text-3xl">Loading...</h2>
+        ) : (
+          <>
+            {/* items display */}
+            <div className="rounded-tr-lg w-cardContainer flex flex-wrap gap-3 p-4">
+              {productList.length > 0 &&
+                productList.map((item) => <Card key={item.id} item={item} />)}
+            </div>
+
+            {/* cart display */}
+            <CartSidebar />
+          </>
+        )}
+      </main>
+    </>
   );
 }
 
