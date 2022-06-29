@@ -56,7 +56,7 @@ export const AppProvider = (props) => {
   // fetch data
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [getProducts]);
   // console.log(productList);
 
   // add to cart
