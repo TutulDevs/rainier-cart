@@ -46,7 +46,7 @@ export const AppProvider = (props) => {
       }));
 
       // this is for test purpose, remove after testing
-      mergedProducts.length = 10;
+      // mergedProducts.length = 10;
 
       setProductList(mergedProducts);
 
