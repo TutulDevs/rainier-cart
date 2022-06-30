@@ -6,6 +6,10 @@ export const AppContext = React.createContext({
   productList: [],
   cartList: [],
   addToCart: () => {},
+  removeFromCart: () => {},
+  clearCart: () => {},
+  increaseQuantity: () => {},
+  decreaseQuantity: () => {},
 });
 
 // provider
@@ -57,7 +61,9 @@ export const AppProvider = (props) => {
   useEffect(() => {
     getProducts();
   }, [getProducts]);
+
   // console.log(productList);
+  // console.log(cartList);
 
   // add to cart
   const addToCart = (id) => {
@@ -65,7 +71,7 @@ export const AppProvider = (props) => {
     // add it to cart array w/ quantity
     // remove from product array
 
-    let obj = productList.find((el) => el.id === id);
+    const obj = productList.find((el) => el.id === id);
 
     setCartList((prev) => [...prev, { ...obj, quantity: 1 }]);
 
@@ -75,6 +81,74 @@ export const AppProvider = (props) => {
   };
 
   // remove from cart
+  const removeFromCart = (id) => {
+    // get the item obj from cart
+    // add to productList
+    // remove it from cartList
+
+    const obj = cartList.find((el) => el.id === id);
+
+    setProductList((prev) => [...prev, { ...obj, quantity: 0 }]);
+
+    const newCartList = cartList.filter((el) => el.id !== id);
+
+    setCartList(newCartList);
+  };
+
+  // clear all cart
+  const clearCart = () => {
+    // make all cart data with quantity 0
+    // merge cart array to product list
+    // empty cart array
+
+    if (cartList.length === 0) {
+      alert("You do not have any item in the cart!");
+    } else {
+      const newCartList = cartList.map((el) => ({ ...el, quantity: 0 }));
+
+      setProductList((prev) => [...prev, ...newCartList]);
+
+      cartList.length = 0;
+    }
+  };
+
+  // increase quantity
+  const increaseQuantity = (id, step = 1) => {
+    // check if the quantity is exceeding than the quantity in the inventory
+    // update the obj, push it to the cart array
+
+    const newCartList = cartList.map((el) => {
+      if (el.id === id) {
+        const nextQuantity = el.quantity + step;
+
+        if (el.qty < nextQuantity) {
+          alert("Inventory does not have enough products to delivery.");
+          return el;
+        } else return { ...el, quantity: el.quantity + step };
+      } else return el;
+    });
+
+    setCartList(newCartList);
+  };
+
+  // decrease quantity
+  const decreaseQuantity = (id, step = 1) => {
+    // check if the present quantity is 1, remove item from cart
+    // else the obj, push it to the cart array
+
+    const obj = cartList.find((el) => el.id === id);
+    const nextQuantity = obj.quantity - step;
+
+    if (nextQuantity < 1) {
+      removeFromCart(id);
+    } else {
+      const newCartList = cartList.map((el) =>
+        el.id === id ? { ...el, quantity: el.quantity - step } : el
+      );
+
+      setCartList(newCartList);
+    }
+  };
 
   return (
     <AppContext.Provider
@@ -83,6 +157,10 @@ export const AppProvider = (props) => {
         productList,
         cartList,
         addToCart,
+        removeFromCart,
+        clearCart,
+        increaseQuantity,
+        decreaseQuantity,
       }}
     >
       {props.children}
